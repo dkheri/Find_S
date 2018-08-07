@@ -9,23 +9,6 @@ vector<vector<string>> attributes={{"Sunny","Rainy"}, {"Warm","Cold"}, {"Normal"
                                    {"Strong","Weak"}, {"Warm","Cool"}, {"Same","Change"}};
 int num_attributes=attributes.size();
 
-void print(vector<string> data)
-{
-    for(const string& attr:data)
-    {
-        cout<<attr<<" ";
-    }
-    cout<<endl;
-}
-
-void print(vector<vector<string>> set)
-{
-      for(const auto& data:set){
-        print(data);
-      }
-}
-
-
 vector<string> generate_random_training_example(vector<string> target)
 {
     vector<string> example;
@@ -71,7 +54,6 @@ vector<vector<string>> extract_training_data(const string& in_file)
     return training_set;
 }
 
-
 vector<string>& re_evaluate_hypothesis(vector<string>& hypothesis,vector<string>& data)
 {
         for(int i=0;i<hypothesis.size();i++) {
@@ -97,7 +79,7 @@ vector<string> Find_S(vector<vector<string>>& training_set)
     return hypothesis;
 }
 
-int experiment(vector<vector<string>>& training_set,vector<string>& target_concept)
+int experiment(vector<vector<string>> training_set,vector<string>& target_concept)
 {
      int training_examples=0;
      std::srand(time(nullptr));
@@ -113,9 +95,15 @@ int experiment(vector<vector<string>>& training_set,vector<string>& target_conce
 
 int main() {
 
-    vector<vector<string>> training_set=extract_training_data("in.txt");
-//    vector<string> hypo=Find_S(training_set);
+    string input_file="in.txt";
+    vector<vector<string>> training_set=extract_training_data(input_file);
     vector<string> target_concept={"Sunny","Warm","?","?","?","?"};
-    cout<<experiment(training_set,target_concept);
+    int num_training_examples=0;
+    int num_experiments=1000;
+
+    for(int i=0;i<num_experiments;i++)
+        num_training_examples+=experiment(training_set,target_concept);
+
+    cout<<"Additional Training Examples required are "<<num_training_examples/num_experiments;
     return 0;
 }
