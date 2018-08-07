@@ -1,8 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <ctime>
 
 using  namespace std;
+
+vector<vector<string>> attributes={{"Sunny","Rainy"}, {"Warm","Cold"}, {"Normal","High"},
+                                   {"Strong","Weak"}, {"Warm","Cool"}, {"Same","Change"}};
+int num_attributes=attributes.size();
 
 void print(vector<string> data)
 {
@@ -10,6 +15,25 @@ void print(vector<string> data)
     {
         cout<<attr<<endl;
     }
+}
+
+vector<string> generate_random_training_example(vector<string> target)
+{
+    vector<string> example;
+    string verdict= "Yes";
+    std::srand(time(nullptr));
+    int random_number;
+    for(int i=0;i<num_attributes;i++)
+    {
+        random_number=rand()%2;
+        example.push_back(attributes[i][random_number]);
+        if(target[i]!="?" && target[i]!=example[i])
+        {
+            verdict="No";
+        }
+    }
+    example.push_back(verdict);
+    return example;
 }
 
 
@@ -66,13 +90,11 @@ vector<string> Find_S(vector<vector<string>>& training_set)
 
     return hypothesis;
 }
-
-
-
 int main() {
 
     vector<vector<string>> training_set=extract_training_data("in.txt");
-    vector<string> data=Find_S(training_set);
-    print(data);
+    vector<string> hypo=Find_S(training_set);
+    vector<string> target_concept={"Sunny","Warm","?","?","?","?"};
+    print(hypo);
     return 0;
 }
