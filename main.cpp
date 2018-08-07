@@ -13,15 +13,23 @@ void print(vector<string> data)
 {
     for(const string& attr:data)
     {
-        cout<<attr<<endl;
+        cout<<attr<<" ";
     }
+    cout<<endl;
 }
+
+void print(vector<vector<string>> set)
+{
+      for(const auto& data:set){
+        print(data);
+      }
+}
+
 
 vector<string> generate_random_training_example(vector<string> target)
 {
     vector<string> example;
     string verdict= "Yes";
-    std::srand(time(nullptr));
     int random_number;
     for(int i=0;i<num_attributes;i++)
     {
@@ -73,7 +81,6 @@ vector<string>& re_evaluate_hypothesis(vector<string>& hypothesis,vector<string>
                 }
             }
         }
-
        return hypothesis;
 }
 
@@ -83,18 +90,32 @@ vector<string> Find_S(vector<vector<string>>& training_set)
     for(int i=0;i<training_set.size();i++)
     {
         if(training_set[i][training_set[i].size()-1]=="Yes"){
-            if (i == 0) hypothesis = training_set[i];
+            if (i == 0) {hypothesis = training_set[i]; hypothesis.resize(num_attributes);}
             else { hypothesis = re_evaluate_hypothesis(hypothesis, training_set[i]); }
         }
     }
-
     return hypothesis;
 }
+
+int experiment(vector<vector<string>>& training_set,vector<string>& target_concept)
+{
+     int training_examples=0;
+     std::srand(time(nullptr));
+     while(Find_S(training_set)!=target_concept)
+     {
+         training_set.push_back(generate_random_training_example(target_concept));
+         training_examples++;
+     }
+
+    return training_examples;
+}
+
+
 int main() {
 
     vector<vector<string>> training_set=extract_training_data("in.txt");
-    vector<string> hypo=Find_S(training_set);
+//    vector<string> hypo=Find_S(training_set);
     vector<string> target_concept={"Sunny","Warm","?","?","?","?"};
-    print(hypo);
+    cout<<experiment(training_set,target_concept);
     return 0;
 }
